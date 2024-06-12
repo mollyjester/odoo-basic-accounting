@@ -1,0 +1,98 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="oba_account_tree">
+            <field name="name">oba.account.tree</field>
+            <field name="model">oba.account</field>
+            <field name="arch" type="xml">
+                <tree default_order="name desc">
+                    <field name="name" widget="integer"/>
+                    <field name="description"/>
+                    <field name="type"/>
+                    <field name="balance"/>
+                    <field name="company_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="oba_transaction_tree">
+            <field name="name">oba.transaction.tree</field>
+            <field name="model">oba.transaction</field>
+            <field name="arch" type="xml">
+                <tree default_order="date desc">
+                    <field name="date" widget="integer"/>
+                    <field name="amount"/>
+                    <field name="account_id"/>
+                    <field name="offset_account_id"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="oba_account_form">
+            <field name="name">oba.account.form</field>
+            <field name="model">oba.account</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1 class="d-flex flex-row">
+                                Account
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="name"/>
+                            <field name="description"/>
+                            <field name="type"/>
+                            <field name="balance"/>
+                            <field name="company_id"/>
+                        </group>
+                    </sheet>
+                </form>
+             </field>
+        </record>
+
+        <record model="ir.ui.view" id="oba_transaction_form">
+            <field name="name">oba.transaction.form</field>
+            <field name="model">oba.transaction</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1 class="d-flex flex-row">
+                                Transaction
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="date"/>
+                            <field name="amount"/>
+                            <field name="account_id"/>
+                            <field name="offset_account_id"/>
+                        </group>
+                    </sheet>
+                </form>
+             </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="oba_account_action_window">
+            <field name="name">Accounts</field>
+            <field name="res_model">oba.account</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="oba_account_tree"/>
+
+        <record model="ir.actions.act_window" id="oba_transaction_action_window">
+            <field name="name">Transactions</field>
+            <field name="res_model">oba.transaction</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="oba_transaction_tree"/>
+        </record>
+
+        <menuitem name="Basic Accounting"
+                  id="oba_menu_root"
+                  action="oba_account_action_window"/>
+
+        <menuitem name="Transactions"
+                  id="oba_transactions_menu"
+                  parent="oba_menu_root"
+                  action="oba_transaction_action_window"
+                  sequence="10"/>
+    </data>
+</odoo>
