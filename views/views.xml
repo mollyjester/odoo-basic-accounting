@@ -9,6 +9,7 @@
                     <field name="description"/>
                     <field name="type"/>
                     <field name="balance"/>
+                    <field name="currency_id"/>
                     <field name="company_id"/>
                 </tree>
             </field>
@@ -43,6 +44,7 @@
                             <field name="description"/>
                             <field name="type"/>
                             <field name="balance"/>
+                            <field name="currency_id"/>
                             <field name="company_id"/>
                         </group>
                     </sheet>
@@ -77,6 +79,7 @@
             <field name="res_model">oba.account</field>
             <field name="view_mode">tree,form</field>
             <field name="view_id" ref="oba_account_tree"/>
+        </record>
 
         <record model="ir.actions.act_window" id="oba_transaction_action_window">
             <field name="name">Transactions</field>

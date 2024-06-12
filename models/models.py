@@ -18,9 +18,10 @@ class obaAccount(models.Model):
         ('equity', 'Equity'),
         ('Revenue', 'Revenue')
     ], required=True)
-    balance = fields.Monetary(string="Balance", readonly=True)
     company_id = fields.Many2one('res.company', readonly=False,
                                  default=lambda self: self.env.company, required=True)
+    currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
+    balance = fields.Monetary(string="Balance", readonly=True, currency_field='currency_id')
 
 class obaTransaction(models.Model):
     _name = 'oba.transaction'
@@ -29,8 +30,12 @@ class obaTransaction(models.Model):
     amount = fields.Monetary(string="Amount", required=True)
     date = fields.Date(string="Date", required=True)
 
-    account_id = fields.Many2one(string="From account", 'oba.account', readonly=False, required=True)
-    offset_account_id = fields.Many2one(string="To account", 'oba.account', readonly=False, required=True)
+    account_id = fields.Many2one(string="From account", comodel_name='oba.account', readonly=False, required=True)
+    offset_account_id = fields.Many2one(string="To account", comodel_name='oba.account', readonly=False, required=True)
+
+    company_id = fields.Many2one('res.company', readonly=False,
+                                 default=lambda self: self.env.company, required=True)
+    currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
 
     #state = fields.Selection([
     #    ('draft', 'New'),
