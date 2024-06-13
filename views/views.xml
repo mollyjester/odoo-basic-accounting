@@ -90,7 +90,8 @@
 
         <menuitem name="Basic Accounting"
                   id="oba_menu_root"
-                  action="oba_account_action_window"/>
+                  action="oba_account_action_window"
+                  web_icon="odoo-basic-accounting,static/description/icon.png"/>
 
         <menuitem name="Transactions"
                   id="oba_transactions_menu"

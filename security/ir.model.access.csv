@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_car_clickup_car_clickup,car_clickup.car_clickup,model_car_clickup_car_clickup,base.group_user,1,1,1,1
+oba_account,oba_account,model_oba_account,base.group_user,1,1,1,1
+oba_transaction,oba_transaction,model_oba_transaction,base.group_user,1,1,1,1
