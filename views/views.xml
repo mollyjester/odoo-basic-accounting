@@ -5,7 +5,7 @@
             <field name="model">oba.account</field>
             <field name="arch" type="xml">
                 <tree default_order="name desc">
-                    <field name="name" widget="integer"/>
+                    <field name="name"/>
                     <field name="description"/>
                     <field name="type"/>
                     <field name="balance"/>
@@ -20,7 +20,7 @@
             <field name="model">oba.transaction</field>
             <field name="arch" type="xml">
                 <tree default_order="date desc">
-                    <field name="date" widget="integer"/>
+                    <field name="date"/>
                     <field name="amount"/>
                     <field name="account_id"/>
                     <field name="offset_account_id"/>
