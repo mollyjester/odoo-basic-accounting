@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
-#import requests
-#import time
+from odoo.exceptions import UserError, ValidationError
 
-
-class obaAccount(models.Model):
+class ObaAccount(models.Model):
     _name = 'oba.account'
     _description = 'Account'
 
@@ -23,7 +21,16 @@ class obaAccount(models.Model):
     currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
     balance = fields.Monetary(string="Balance", readonly=True, currency_field='currency_id')
 
-class obaTransaction(models.Model):
+    def write(self, vals):
+        # Do not allow changing the company_id when transactions exist
+        if vals.get('company_id', False):
+            for account in self:
+                if self.env['oba.transaction'].search_count(
+                        ['|', ('account_id', '=', account.id), ('offset_account_id', '=', account.id)]):
+                    raise UserError('Company cannot be changed while related transactions exist.')
+        return super(ObaAccount, self).write(vals)
+
+class ObaTransaction(models.Model):
     _name = 'oba.transaction'
     _description = 'Transaction'
 
@@ -37,8 +44,10 @@ class obaTransaction(models.Model):
                                  default=lambda self: self.env.company, required=True)
     currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
 
-    #state = fields.Selection([
-    #    ('draft', 'New'),
-    #    ('posted', 'Posted'),
-    #    ('cancel', 'Cancelled')
-    #], string='Status', copy=False, default='draft', tracking=True)
+    state = fields.Selection([
+        ('draft', 'New'),
+        ('posted', 'Posted'),
+        ('cancel', 'Cancelled')
+    ], string='Status', copy=False, default='draft', tracking=True)
+
+    attachment_ids = fields.Many2many('ir.attachment', string="Attachments")

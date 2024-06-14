@@ -68,8 +68,10 @@
                             <field name="amount"/>
                             <field name="account_id"/>
                             <field name="offset_account_id"/>
+                            <field name="attachment_ids" widget="many2many_binary"/>
                         </group>
                     </sheet>
+
                 </form>
              </field>
         </record>
