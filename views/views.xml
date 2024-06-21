@@ -24,6 +24,8 @@
                     <field name="amount"/>
                     <field name="account_id"/>
                     <field name="offset_account_id"/>
+                    <field name="currency_id"/>
+                    <field name="company_id"/>
                 </tree>
             </field>
         </record>
@@ -64,12 +66,15 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="date"/>
-                            <field name="amount"/>
-                            <field name="account_id"/>
-                            <field name="offset_account_id"/>
-                            <field name="attachment_name" invisible="True"/>
-                            <field name="attachment" filename="attachment_name"/>
+                            <field name="date" />
+                            <field name="amount" />
+                            <field name="account_id" />
+                            <field name="offset_account_id" />
+                            <!--<field name="attachment_name" invisible="True" />
+                            <field name="attachment" filename="attachment_name" />
+                            <field name="attachment" widget="image" readonly="True" options="{'preview_image': 'image_128'}" /> -->
+                            <field name="currency_id"/>
+                            <field name="company_id"/>
                         </group>
                     </sheet>
 
