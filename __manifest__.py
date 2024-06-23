@@ -26,7 +26,9 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml'
+        'views/account.xml',
+        'views/transaction.xml',
+        'views/expense.xml'
     ],
     'installable': True,
     'application': True

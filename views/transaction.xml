@@ -1,20 +1,5 @@
 <odoo>
     <data>
-        <record model="ir.ui.view" id="oba_account_tree">
-            <field name="name">oba.account.tree</field>
-            <field name="model">oba.account</field>
-            <field name="arch" type="xml">
-                <tree default_order="name desc">
-                    <field name="name"/>
-                    <field name="description"/>
-                    <field name="type"/>
-                    <field name="balance"/>
-                    <field name="currency_id"/>
-                    <field name="company_id"/>
-                </tree>
-            </field>
-        </record>
-
         <record model="ir.ui.view" id="oba_transaction_tree">
             <field name="name">oba.transaction.tree</field>
             <field name="model">oba.transaction</field>
@@ -27,30 +12,6 @@
                     <field name="currency_id"/>
                     <field name="company_id"/>
                 </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="oba_account_form">
-            <field name="name">oba.account.form</field>
-            <field name="model">oba.account</field>
-            <field name="arch" type="xml">
-                <form>
-                    <sheet>
-                        <div class="oe_title">
-                            <h1 class="d-flex flex-row">
-                                Account
-                            </h1>
-                        </div>
-                        <group>
-                            <field name="name"/>
-                            <field name="description"/>
-                            <field name="type"/>
-                            <field name="balance"/>
-                            <field name="currency_id"/>
-                            <field name="company_id"/>
-                        </group>
-                    </sheet>
-                </form>
             </field>
         </record>
 
@@ -77,16 +38,8 @@
                             <field name="company_id"/>
                         </group>
                     </sheet>
-
                 </form>
             </field>
-        </record>
-
-        <record model="ir.actions.act_window" id="oba_account_action_window">
-            <field name="name">Accounts</field>
-            <field name="res_model">oba.account</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="oba_account_tree"/>
         </record>
 
         <record model="ir.actions.act_window" id="oba_transaction_action_window">
@@ -96,14 +49,9 @@
             <field name="view_id" ref="oba_transaction_tree"/>
         </record>
 
-        <menuitem name="Basic Accounting"
-                  id="oba_menu_root"
-                  action="oba_account_action_window"
-                  web_icon="odoo-basic-accounting,static/description/icon.png"/>
-
         <menuitem name="Transactions"
                   id="oba_transactions_menu"
-                  parent="oba_menu_root"
+                  parent="odoo-basic-accounting.oba_menu_root"
                   action="oba_transaction_action_window"
                   sequence="10"/>
     </data>

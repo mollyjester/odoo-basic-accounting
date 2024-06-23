@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from . import veryfistream
 
 
 class ObaExpense(models.Model):
@@ -9,10 +10,8 @@ class ObaExpense(models.Model):
     category_id = fields.Many2one(string='Category', comodel_name='oba.expense.category', ondelete='set null')
     amount = fields.Monetary(string="Amount", required=True)
     date = fields.Date(string="Date", required=True, default=fields.Date.today())
-
     account_id = fields.Many2one(string="From account", comodel_name='oba.account', readonly=False, required=True)
     offset_account_id = fields.Many2one(string="To account", comodel_name='oba.account', readonly=False, required=True)
-
     company_id = fields.Many2one('res.company', readonly=False,
                                  default=lambda self: self.env.company, required=True)
     currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
@@ -40,7 +39,7 @@ class ObaExpense(models.Model):
             username = 'ikusurei'
             api_key = '2e14f9a9d8191344993293bcd3d86a5f'
             veryfi_client = veryfistream.VeryfiClient(client_id, client_secret, username, api_key)
-            ret = veryfi_client.process_document_base64(file_raw, file_name, categories=[category])
+            ret = veryfi_client.process_document_base64(file_raw, file_name, categories=category)
         return ret
 
     def write(self, vals):
@@ -51,7 +50,11 @@ class ObaExpense(models.Model):
     @api.model
     def create(self, vals_list):
         if 'attachment' in vals_list and vals_list['attachment']:
-            json = self.process_ocr(vals_list['attachment'], vals_list['attachment_name'], vals_list['category_id'])
+            category = None
+            if vals_list['category_id']:
+                category = [
+                    self.env['oba.expense.category'].search([('id', '=', vals_list['category_id'])], limit=1).name]
+            json = self.process_ocr(vals_list['attachment'], vals_list['attachment_name'], category)
             if json:
                 vals_list['amount'] = json['total']
                 vals_list['date'] = fields.Date.to_date(json['date'])

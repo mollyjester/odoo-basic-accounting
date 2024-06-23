@@ -1,0 +1,107 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="oba_expense_tree">
+            <field name="name">oba.expense.tree</field>
+            <field name="model">oba.expense</field>
+            <field name="arch" type="xml">
+                <tree default_order="date desc">
+                    <field name="vendor_id" />
+                    <field name="category_id" />
+                    <field name="date" />
+                    <field name="amount" />
+                    <field name="account_id" />
+                    <field name="offset_account_id" />
+                    <field name="currency_id" />
+                    <field name="company_id" />
+                    <field name="state" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="oba_transaction_form">
+            <field name="name">oba.expense.form</field>
+            <field name="model">oba.expense</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1 class="d-flex flex-row">
+                                Expense
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="vendor_id" />
+                            <field name="category_id" />
+                            <field name="date" />
+                            <field name="amount" />
+                            <field name="account_id" />
+                            <field name="offset_account_id" />
+                            <field name="attachment_name" invisible="True" />
+                            <field name="attachment" filename="attachment_name" />
+                            <field name="attachment" widget="image" readonly="True" options="{'preview_image': 'image_128'}" />
+                            <field name="currency_id"/>
+                            <field name="company_id"/>
+                            <field name="state" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="oba_expense_category_tree">
+            <field name="name">oba.expense.category.tree</field>
+            <field name="model">oba.expense.category</field>
+            <field name="arch" type="xml">
+                <tree default_order="name asc">
+                    <field name="name" />
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="oba_expense_category_form">
+            <field name="name">oba.expense.category.form</field>
+            <field name="model">oba.expense.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1 class="d-flex flex-row">
+                                Category
+                            </h1>
+                        </div>
+                        <group>
+                            <field name="name" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="oba_expense_action_window">
+            <field name="name">Expenses</field>
+            <field name="res_model">oba.expense</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="oba_expense_tree"/>
+        </record>
+
+        <record model="ir.actions.act_window" id="oba_expense_category_action_window">
+            <field name="name">Categories</field>
+            <field name="res_model">oba.expense.category</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="oba_expense_category_tree"/>
+        </record>
+
+        <menuitem name="Expenses" id="oba_expenses_menu_root" parent="odoo-basic-accounting.oba_menu_root"
+                  sequence="20"/>
+        <menuitem name="Expenses"
+                  id="oba_expenses_menu"
+                  parent="oba_expenses_menu_root"
+                  action="oba_expense_action_window"
+                  sequence="10"/>
+        <menuitem name="Categories"
+                  id="oba_categories_menu"
+                  parent="oba_expenses_menu_root"
+                  action="oba_expense_category_action_window"
+                  sequence="20"/>
+    </data>
+</odoo>

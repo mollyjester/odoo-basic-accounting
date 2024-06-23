@@ -2,7 +2,6 @@
 
 from odoo import models, fields, api
 from odoo.exceptions import UserError, ValidationError
-from . import veryfistream
 
 # veryfi client_id: vrfa95DCfutsyxZv7aPdmK6rkllfETI02axGi3i
 # client_secret = '56H3ngR4Ox6rhVoVDpUayWMIKMOckScc5esAAZbubD90ffMfPgDgA2LlPBHIi5f3zhA5hXxFaN6JOMmtKtYgumf25SMECghrY4cX1Ux2SDfOTWX3RkzwO2vF8Vk0iUtN'
