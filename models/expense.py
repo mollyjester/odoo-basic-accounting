@@ -42,9 +42,25 @@ class ObaExpense(models.Model):
             ret = veryfi_client.process_document_base64(file_raw, file_name, categories=category)
         return ret
 
+    @api.model
+    def update_vals(self, vals, json):
+        if json:
+            vals['amount'] = json['total']
+            vals['date'] = fields.Date.to_date(json['date'])
+            if json['vendor'] and json['vendor']['name']:
+                partner = self.env['res.partner'].search([('name', '=', json['vendor']['name'])], limit=1)
+                if not partner:
+                    partner = self.env['res.partner'].create({
+                        'name': json['vendor']['name'],
+                        'street': json['vendor']['address']
+                    })
+                vals['vendor_id'] = partner.id
+        return vals
+
     def write(self, vals):
         if 'attachment' in vals and vals['attachment']:
-            self.process_ocr(vals['attachment'], vals['attachment_name'], vals['category_id'] or self.category_id.name)
+            json = self.process_ocr(vals['attachment'], vals['attachment_name'], vals['category_id'] or self.category_id.name)
+            vals = self.update_vals(vals, json)
         return super(ObaExpense, self).write(vals)
 
     @api.model
@@ -55,17 +71,7 @@ class ObaExpense(models.Model):
                 category = [
                     self.env['oba.expense.category'].search([('id', '=', vals_list['category_id'])], limit=1).name]
             json = self.process_ocr(vals_list['attachment'], vals_list['attachment_name'], category)
-            if json:
-                vals_list['amount'] = json['total']
-                vals_list['date'] = fields.Date.to_date(json['date'])
-                if json['vendor'] and json['vendor']['name']:
-                    partner = self.env['res.partner'].search([('name', '=', json['vendor']['name'])], limit=1)
-                    if not partner:
-                        partner = self.env['res.partner'].create({
-                            'name': json['vendor']['name'],
-                            'street': json['vendor']['address']
-                        })
-                    vals_list['vendor_id'] = partner.id
+            vals_list = self.update_vals(vals_list, json)
         return super(ObaExpense, self).create(vals_list)
 
 
