@@ -38,7 +38,7 @@
                             <field name="offset_account_id" />
                             <field name="attachment_name" invisible="True" />
                             <field name="attachment" filename="attachment_name" />
-                            <field name="attachment" widget="image" readonly="True" options="{'preview_image': 'image_128'}" />
+                            <label string="" for="attachment"/><field name="attachment" widget="image" readonly="True" options="{'size': [150]}" nolabel="1" />
                             <field name="currency_id"/>
                             <field name="company_id"/>
                             <field name="state" />

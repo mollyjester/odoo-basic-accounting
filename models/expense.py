@@ -23,21 +23,21 @@ class ObaExpense(models.Model):
     attachment = fields.Binary(string="Attachment")
     attachment_name = fields.Char(string="Attachment name")
 
-    def name_get(self):
-        return [(record.id, f"{record.account_id.name} > {record.vendor_id.name or record.offset_account_id.name}") for
-                record in self]
+    @api.depends('account_id', 'vendor_id', 'offset_account_id')
+    def _compute_display_name(self):
+        for expense in self:
+            expense.display_name = \
+                f"{expense.account_id.name} > {expense.offset_account_id.name} ({expense.vendor_id.name})"
 
     @api.model
     def process_ocr(self, file_raw, file_name, category):
         ret = None
-        # veryfi client_id: vrfa95DCfutsyxZv7aPdmK6rkllfETI02axGi3i
-        # username: ikusurei
-        # api key: 2e14f9a9d8191344993293bcd3d86a5f
         if file_raw:
-            client_id = 'vrfa95DCfutsyxZv7aPdmK6rkllfETI02axGi3i'
-            client_secret = '56H3ngR4Ox6rhVoVDpUayWMIKMOckScc5esAAZbubD90ffMfPgDgA2LlPBHIi5f3zhA5hXxFaN6JOMmtKtYgumf25SMECghrY4cX1Ux2SDfOTWX3RkzwO2vF8Vk0iUtN'
-            username = 'ikusurei'
-            api_key = '2e14f9a9d8191344993293bcd3d86a5f'
+            client_id = self.env['ir.config_parameter'].sudo().get_param('odoo_basic_accounting.veryfi_client_id')
+            client_secret = self.env['ir.config_parameter'].sudo().get_param(
+                'odoo_basic_accounting.veryfi_client_secret')
+            username = self.env['ir.config_parameter'].sudo().get_param('odoo_basic_accounting.veryfi_username')
+            api_key = self.env['ir.config_parameter'].sudo().get_param('odoo_basic_accounting.veryfi_api_key')
             veryfi_client = veryfistream.VeryfiClient(client_id, client_secret, username, api_key)
             ret = veryfi_client.process_document_base64(file_raw, file_name, categories=category)
         return ret
