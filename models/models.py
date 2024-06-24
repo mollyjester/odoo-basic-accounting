@@ -54,5 +54,14 @@ class ObaTransaction(models.Model):
 
     @api.model
     def create(self, vals_list):
-        # todo: recalc accounts balances
-        return super(ObaTransaction, self).create(vals_list)
+        new_record = super(ObaTransaction, self).create(vals_list)
+        new_record.account_id.balance = new_record.account_id.balance - new_record.amount
+        new_record.offset_account_id.balance = new_record.account_id.balance + new_record.amount
+        return new_record
+
+    def write(self, vals):
+        ret = super(ObaTransaction, self).write(vals)
+        for record in self:
+            record.account_id.balance = record.account_id.balance - record.amount
+            record.offset_account_id.balance = record.account_id.balance + record.amount
+        return ret
