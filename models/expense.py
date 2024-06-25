@@ -22,6 +22,8 @@ class ObaExpense(models.Model):
     ], string='Status', copy=False, default='draft', tracking=True)
     attachment = fields.Binary(string="Attachment")
     attachment_name = fields.Char(string="Attachment name")
+    transaction_ids = fields.One2many(string="Transactions", comodel_name='oba.transaction', inverse_name="source_id",
+                                      readonly=True)
 
     @api.depends('account_id', 'vendor_id', 'offset_account_id')
     def _compute_display_name(self):
@@ -73,6 +75,27 @@ class ObaExpense(models.Model):
             json = self.process_ocr(vals_list['attachment'], vals_list['attachment_name'], category)
             vals_list = self.update_vals(vals_list, json)
         return super(ObaExpense, self).create(vals_list)
+
+    def set_status(self, status):
+        if status == 'draft' or status == 'cancel':
+            transactions = self.env['oba.transaction'].search(
+                [('source_model', '=', self._name), ('source_id', 'in', self.ids)])
+            transactions.unlink()
+        elif status == 'posted':
+            for expense in self:
+                self.env['oba.transaction'].create({
+                    'amount': expense.amount,
+                    'date': expense.date,
+                    'account_id': expense.account_id,
+                    'offset_account_id': expense.offset_account_id,
+                    'company_id': expense.company_id,
+                    'source_model': self._name,
+                    'source_id': expense.id
+                })
+        return True
+
+    def action_post(self):
+        self.set_status('posted')
 
 
 class ObaExpenseCategory(models.Model):

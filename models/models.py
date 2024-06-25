@@ -48,6 +48,8 @@ class ObaTransaction(models.Model):
     company_id = fields.Many2one('res.company', readonly=False,
                                  default=lambda self: self.env.company, required=True)
     currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
+    source_model = fields.Char('Source model', readonly=True)
+    source_id = fields.Many2oneReference('Source Id', model_field='source_model', readonly=True)
 
     def name_get(self):
         return [(record.id, f"{record.account_id.name} > {record.offset_account_id.name}") for record in self]
