@@ -23,6 +23,9 @@
             <field name="model">oba.expense</field>
             <field name="arch" type="xml">
                 <form>
+                    <header>
+                        <button name="action_post" type="object" string="Post"/>
+                    </header>
                     <sheet>
                         <div class="oe_title">
                             <h1 class="d-flex flex-row">

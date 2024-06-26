@@ -3,11 +3,6 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError, ValidationError
 
-# veryfi client_id: vrfa95DCfutsyxZv7aPdmK6rkllfETI02axGi3i
-# client_secret = '56H3ngR4Ox6rhVoVDpUayWMIKMOckScc5esAAZbubD90ffMfPgDgA2LlPBHIi5f3zhA5hXxFaN6JOMmtKtYgumf25SMECghrY4cX1Ux2SDfOTWX3RkzwO2vF8Vk0iUtN'
-# username: ikusurei
-# api key: 2e14f9a9d8191344993293bcd3d86a5f
-
 
 class ObaAccount(models.Model):
     _name = 'oba.account'

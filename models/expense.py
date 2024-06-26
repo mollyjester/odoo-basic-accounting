@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from . import veryfistream
+from odoo.exceptions import UserError, ValidationError
 
 
 class ObaExpense(models.Model):
@@ -8,12 +9,12 @@ class ObaExpense(models.Model):
 
     vendor_id = fields.Many2one(string='Vendor', comodel_name='res.partner', ondelete='restrict')
     category_id = fields.Many2one(string='Category', comodel_name='oba.expense.category', ondelete='set null')
-    amount = fields.Monetary(string="Amount", required=True)
-    date = fields.Date(string="Date", required=True, default=fields.Date.today())
-    account_id = fields.Many2one(string="From account", comodel_name='oba.account', readonly=False, required=True)
-    offset_account_id = fields.Many2one(string="To account", comodel_name='oba.account', readonly=False, required=True)
-    company_id = fields.Many2one('res.company', readonly=False,
-                                 default=lambda self: self.env.company, required=True)
+    amount = fields.Monetary(string="Amount")
+    date = fields.Date(string="Date", default=fields.Date.today())
+    account_id = fields.Many2one(string="Account", comodel_name='oba.account')
+    offset_account_id = fields.Many2one(string="Offset account", comodel_name='oba.account')
+    company_id = fields.Many2one('res.company', readonly=True,
+                                 default=lambda self: self.env.company)
     currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
     state = fields.Selection([
         ('draft', 'New'),
@@ -54,7 +55,8 @@ class ObaExpense(models.Model):
                 if not partner:
                     partner = self.env['res.partner'].create({
                         'name': json['vendor']['name'],
-                        'street': json['vendor']['address']
+                        'street': json['vendor']['address'],
+                        'is_company': True
                     })
                 vals['vendor_id'] = partner.id
         return vals
@@ -94,8 +96,25 @@ class ObaExpense(models.Model):
                 })
         return True
 
+    def validate_fields(self, status):
+        ret = True
+        if status == 'posted':
+            if not self.amount:
+                raise ValidationError(f"{self._fields['amount'].string} cannot be empty.")
+            if not self.date:
+                raise ValidationError(f"{self._fields['date'].string} cannot be empty.")
+            if not self.account_id:
+                raise ValidationError(f"{self._fields['account_id'].string} cannot be empty.")
+            if not self.offset_account_id:
+                raise ValidationError(f"{self._fields['offset_account_id'].string} cannot be empty.")
+            if not self.company_id:
+                raise ValidationError(f"{self._fields['company_id'].string} cannot be empty.")
+        return ret
+
     def action_post(self):
-        self.set_status('posted')
+        for expense in self:
+            if expense.validate_fields('posted'):
+                expense.set_status('posted')
 
 
 class ObaExpenseCategory(models.Model):
