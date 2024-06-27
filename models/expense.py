@@ -84,7 +84,7 @@ class ObaExpense(models.Model):
 
     def set_status(self, status):
         if status == 'draft' or status == 'cancel':
-            transactions = self.env['oba.transaction'].search(
+            transactions = self.env['oba.transaction'].sudo().search(
                 [('source_model', '=', self._name), ('source_id', 'in', self.ids)])
             transactions.unlink()
         elif status == 'posted':

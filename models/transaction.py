@@ -15,8 +15,11 @@ class ObaTransaction(models.Model):
     source_model = fields.Char('Source model', readonly=True)
     source_id = fields.Many2oneReference('Source Id', model_field='source_model', readonly=True)
 
-    def name_get(self):
-        return [(record.id, f"{record.account_id.name} > {record.offset_account_id.name}") for record in self]
+    @api.depends('account_id', 'offset_account_id')
+    def _compute_display_name(self):
+        for expense in self:
+            expense.display_name = \
+                f"{expense.account_id.name} > {expense.offset_account_id.name}"
 
     @api.model
     def create(self, vals_list):

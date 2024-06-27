@@ -23,19 +23,23 @@
                     <sheet>
                         <div class="oe_title">
                             <h1 class="d-flex flex-row">
-                                Transaction
+                                <field name="display_name"/>
                             </h1>
                         </div>
                         <group>
-                            <field name="date" />
-                            <field name="amount" />
-                            <field name="account_id" />
-                            <field name="offset_account_id" />
-                            <!--<field name="attachment_name" invisible="True" />
-                            <field name="attachment" filename="attachment_name" />
-                            <field name="attachment" widget="image" readonly="True" options="{'preview_image': 'image_128'}" /> -->
-                            <field name="currency_id"/>
-                            <field name="company_id"/>
+                            <group string="Main">
+                                <field name="date"/>
+                                <field name="amount"/>
+                            </group>
+                            <newline/>
+                            <group string="Accounts">
+                                <field name="account_id"/>
+                                <field name="offset_account_id"/>
+                            </group>
+                            <group string="Company info">
+                                <field name="currency_id"/>
+                                <field name="company_id"/>
+                            </group>
                         </group>
                     </sheet>
                 </form>
