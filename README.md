@@ -21,3 +21,5 @@ Odoo basic accounting module for household management
 - [ ] Dashboard
 - [ ] UI
 - [ ] Reports
+- [ ] Banks
+- [ ] Bank statement import

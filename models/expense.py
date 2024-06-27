@@ -17,10 +17,10 @@ class ObaExpense(models.Model):
                                  default=lambda self: self.env.company)
     currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
     state = fields.Selection([
-        ('draft', 'New'),
+        ('draft', 'Draft'),
         ('posted', 'Posted'),
         ('cancel', 'Cancelled')
-    ], string='Status', copy=False, default='draft', readonly=True)
+    ], string='Status', copy=False, default='draft')
     attachment = fields.Binary(string="Attachment")
     attachment_name = fields.Char(string="Attachment name")
     transaction_ids = fields.One2many(string="Transactions", comodel_name='oba.transaction', inverse_name="source_id",
@@ -41,8 +41,9 @@ class ObaExpense(models.Model):
                 'odoo_basic_accounting.veryfi_client_secret')
             username = self.env['ir.config_parameter'].sudo().get_param('odoo_basic_accounting.veryfi_username')
             api_key = self.env['ir.config_parameter'].sudo().get_param('odoo_basic_accounting.veryfi_api_key')
-            veryfi_client = veryfistream.VeryfiClient(client_id, client_secret, username, api_key)
-            ret = veryfi_client.process_document_base64(file_raw, file_name, categories=category)
+            if client_id and client_secret and username and api_key:
+                veryfi_client = veryfistream.VeryfiClient(client_id, client_secret, username, api_key)
+                ret = veryfi_client.process_document_base64(file_raw, file_name, categories=category)
         return ret
 
     @api.model
@@ -65,6 +66,9 @@ class ObaExpense(models.Model):
         if 'attachment' in vals and vals['attachment']:
             json = self.process_ocr(vals['attachment'], vals['attachment_name'], vals['category_id'] or self.category_id.name)
             vals = self.update_vals(vals, json)
+        if 'state' in vals:
+            if self.validate_fields(vals['state']):
+                self.set_status(vals['state'])
         return super(ObaExpense, self).write(vals)
 
     @api.model
@@ -94,28 +98,23 @@ class ObaExpense(models.Model):
                     'source_model': self._name,
                     'source_id': expense.id
                 })
-        self.state = status
         return True
 
     def validate_fields(self, status):
         ret = True
         if status == 'posted':
-            if not self.amount:
-                raise ValidationError(f"{self._fields['amount'].string} cannot be empty.")
-            if not self.date:
-                raise ValidationError(f"{self._fields['date'].string} cannot be empty.")
-            if not self.account_id:
-                raise ValidationError(f"{self._fields['account_id'].string} cannot be empty.")
-            if not self.offset_account_id:
-                raise ValidationError(f"{self._fields['offset_account_id'].string} cannot be empty.")
-            if not self.company_id:
-                raise ValidationError(f"{self._fields['company_id'].string} cannot be empty.")
+            for expense in self:
+                if not expense.amount:
+                    raise ValidationError(f"{expense._fields['amount'].string} cannot be empty.")
+                if not expense.date:
+                    raise ValidationError(f"{expense._fields['date'].string} cannot be empty.")
+                if not expense.account_id:
+                    raise ValidationError(f"{expense._fields['account_id'].string} cannot be empty.")
+                if not expense.offset_account_id:
+                    raise ValidationError(f"{expense._fields['offset_account_id'].string} cannot be empty.")
+                if not expense.company_id:
+                    raise ValidationError(f"{expense._fields['company_id'].string} cannot be empty.")
         return ret
-
-    def action_post(self):
-        for expense in self:
-            if expense.validate_fields('posted'):
-                expense.set_status('posted')
 
 
 class ObaExpenseCategory(models.Model):

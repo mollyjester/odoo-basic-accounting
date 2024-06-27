@@ -5,49 +5,66 @@
             <field name="model">oba.expense</field>
             <field name="arch" type="xml">
                 <tree default_order="date desc">
-                    <field name="vendor_id" />
-                    <field name="category_id" />
-                    <field name="date" />
-                    <field name="amount" />
-                    <field name="account_id" />
-                    <field name="offset_account_id" />
-                    <field name="currency_id" />
-                    <field name="company_id" />
+                    <field name="vendor_id"/>
+                    <field name="category_id"/>
+                    <field name="date"/>
+                    <field name="amount"/>
+                    <field name="account_id"/>
+                    <field name="offset_account_id"/>
+                    <field name="currency_id"/>
+                    <field name="company_id"/>
                     <field name="state" widget="badge" decoration-bf="state=='draft'"
                            decoration-danger="state=='cancel'" decoration-success="state=='posted'"/>
                 </tree>
             </field>
         </record>
 
-        <record model="ir.ui.view" id="oba_transaction_form">
+        <record model="ir.ui.view" id="oba_expense_form">
             <field name="name">oba.expense.form</field>
             <field name="model">oba.expense</field>
             <field name="arch" type="xml">
                 <form>
                     <header>
-                        <button name="action_post" type="object" string="Post"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"
+                               options="{'clickable': 1}"/>
                     </header>
                     <sheet>
                         <div class="oe_title">
                             <h1 class="d-flex flex-row">
-                                Expense
+                                <field name="display_name"/>
                             </h1>
-                            <field name="state" widget="badge" decoration-bf="state=='draft'"
-                                   decoration-danger="state=='cancel'" decoration-success="state=='posted'"/>
                         </div>
                         <group>
-                            <field name="vendor_id" />
-                            <field name="category_id" />
-                            <field name="date" />
-                            <field name="amount" />
-                            <field name="account_id" />
-                            <field name="offset_account_id" />
-                            <field name="attachment_name" invisible="True" />
-                            <field name="attachment" filename="attachment_name" />
-                            <label string="" for="attachment"/><field name="attachment" widget="image" readonly="True" options="{'size': [150]}" nolabel="1" />
-                            <field name="currency_id"/>
-                            <field name="company_id"/>
+                            <group string="Main">
+                                <field name="date"/>
+                                <field name="amount"/>
+                            </group>
+                            <newline/>
+                            <group string="Accounts">
+                                <field name="account_id"/>
+                                <field name="offset_account_id"/>
+                            </group>
+                            <group string="Vendor &amp; Category">
+                                <field name="vendor_id"/>
+                                <field name="category_id"/>
+                            </group>
+                            <group string="Company info">
+                                <field name="currency_id"/>
+                                <field name="company_id"/>
+                            </group>
                         </group>
+                        <notebook>
+                            <page string="Attachment">
+                                <field name="attachment_name" invisible="True"/>
+                                <field name="attachment" filename="attachment_name"/>
+                                <!--<label string="" for="attachment"/>-->
+                                <field name="attachment" widget="image" readonly="True" options="{'size': [150]}"
+                                       nolabel="1"/>
+                            </page>
+                            <page string="Transactions">
+                                <field name="transaction_ids" options="{'create': False, 'delete': False}"/>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
@@ -58,7 +75,7 @@
             <field name="model">oba.expense.category</field>
             <field name="arch" type="xml">
                 <tree default_order="name asc">
-                    <field name="name" />
+                    <field name="name"/>
                 </tree>
             </field>
         </record>
@@ -75,7 +92,7 @@
                             </h1>
                         </div>
                         <group>
-                            <field name="name" />
+                            <field name="name"/>
                         </group>
                     </sheet>
                 </form>
