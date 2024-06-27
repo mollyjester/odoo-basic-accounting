@@ -13,7 +13,8 @@
                     <field name="offset_account_id" />
                     <field name="currency_id" />
                     <field name="company_id" />
-                    <field name="state" />
+                    <field name="state" widget="badge" decoration-bf="state=='draft'"
+                           decoration-danger="state=='cancel'" decoration-success="state=='posted'"/>
                 </tree>
             </field>
         </record>
@@ -31,6 +32,8 @@
                             <h1 class="d-flex flex-row">
                                 Expense
                             </h1>
+                            <field name="state" widget="badge" decoration-bf="state=='draft'"
+                                   decoration-danger="state=='cancel'" decoration-success="state=='posted'"/>
                         </div>
                         <group>
                             <field name="vendor_id" />
@@ -44,7 +47,6 @@
                             <label string="" for="attachment"/><field name="attachment" widget="image" readonly="True" options="{'size': [150]}" nolabel="1" />
                             <field name="currency_id"/>
                             <field name="company_id"/>
-                            <field name="state" />
                         </group>
                     </sheet>
                 </form>

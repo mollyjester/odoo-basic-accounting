@@ -20,7 +20,7 @@ class ObaExpense(models.Model):
         ('draft', 'New'),
         ('posted', 'Posted'),
         ('cancel', 'Cancelled')
-    ], string='Status', copy=False, default='draft', tracking=True)
+    ], string='Status', copy=False, default='draft', readonly=True)
     attachment = fields.Binary(string="Attachment")
     attachment_name = fields.Char(string="Attachment name")
     transaction_ids = fields.One2many(string="Transactions", comodel_name='oba.transaction', inverse_name="source_id",
@@ -88,12 +88,13 @@ class ObaExpense(models.Model):
                 self.env['oba.transaction'].create({
                     'amount': expense.amount,
                     'date': expense.date,
-                    'account_id': expense.account_id,
-                    'offset_account_id': expense.offset_account_id,
-                    'company_id': expense.company_id,
+                    'account_id': expense.account_id.id,
+                    'offset_account_id': expense.offset_account_id.id,
+                    'company_id': expense.company_id.id,
                     'source_model': self._name,
                     'source_id': expense.id
                 })
+        self.state = status
         return True
 
     def validate_fields(self, status):
