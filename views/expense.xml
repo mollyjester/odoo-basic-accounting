@@ -5,12 +5,12 @@
             <field name="model">oba.expense</field>
             <field name="arch" type="xml">
                 <tree default_order="date desc">
-                    <field name="vendor_id"/>
-                    <field name="category_id"/>
-                    <field name="date"/>
-                    <field name="amount"/>
-                    <field name="account_id"/>
-                    <field name="offset_account_id"/>
+                    <field name="vendor_id" readonly="state!='draft'"/>
+                    <field name="category_id" readonly="state!='draft'"/>
+                    <field name="date" readonly="state!='draft'"/>
+                    <field name="amount" readonly="state!='draft'"/>
+                    <field name="account_id" readonly="state!='draft'"/>
+                    <field name="offset_account_id" readonly="state!='draft'"/>
                     <field name="currency_id"/>
                     <field name="company_id"/>
                     <field name="state" widget="badge" decoration-bf="state=='draft'"
@@ -36,17 +36,17 @@
                         </div>
                         <group>
                             <group string="Main">
-                                <field name="date"/>
-                                <field name="amount"/>
+                                <field name="date" readonly="state!='draft'"/>
+                                <field name="amount" readonly="state!='draft'"/>
                             </group>
                             <newline/>
                             <group string="Accounts">
-                                <field name="account_id"/>
-                                <field name="offset_account_id"/>
+                                <field name="account_id" readonly="state!='draft'"/>
+                                <field name="offset_account_id" readonly="state!='draft'"/>
                             </group>
                             <group string="Vendor &amp; Category">
-                                <field name="vendor_id"/>
-                                <field name="category_id"/>
+                                <field name="vendor_id" readonly="state!='draft'"/>
+                                <field name="category_id" readonly="state!='draft'"/>
                             </group>
                             <group string="Company info">
                                 <field name="currency_id"/>
@@ -56,13 +56,14 @@
                         <notebook>
                             <page string="Attachment">
                                 <field name="attachment_name" invisible="True"/>
-                                <field name="attachment" filename="attachment_name"/>
+                                <field name="attachment" filename="attachment_name" readonly="state!='draft'"/>
                                 <!--<label string="" for="attachment"/>-->
                                 <field name="attachment" widget="image" readonly="True" options="{'size': [150]}"
                                        nolabel="1"/>
                             </page>
                             <page string="Transactions">
-                                <field name="transaction_ids" options="{'create': False, 'delete': False}"/>
+                                <field name="transaction_ids" options="{'create': False, 'delete': False}"
+                                       readonly="state!='draft'"/>
                             </page>
                         </notebook>
                     </sheet>

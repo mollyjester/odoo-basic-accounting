@@ -29,8 +29,9 @@ class ObaExpense(models.Model):
     @api.depends('account_id', 'vendor_id', 'offset_account_id')
     def _compute_display_name(self):
         for expense in self:
-            expense.display_name = \
-                f"{expense.account_id.name} > {expense.offset_account_id.name} ({expense.vendor_id.name})"
+            name = f"{expense.account_id.name or 'Account'} > {expense.offset_account_id.name or 'Offset account'} "
+            name += f"({expense.vendor_id.name or 'Vendor'})"
+            expense.display_name = name
 
     @api.model
     def process_ocr(self, file_raw, file_name, category):
@@ -63,13 +64,27 @@ class ObaExpense(models.Model):
         return vals
 
     def write(self, vals):
-        if 'attachment' in vals and vals['attachment']:
-            json = self.process_ocr(vals['attachment'], vals['attachment_name'], vals['category_id'] or self.category_id.name)
-            vals = self.update_vals(vals, json)
         if 'state' in vals:
-            if self.validate_fields(vals['state']):
+            if self.validate_fields(vals):
                 self.set_status(vals['state'])
+        else:
+            for expense in self:
+                if expense.state == 'posted':
+                    raise ValidationError(f"Expense {expense.display_name} is already posted."
+                                          "Revert it to Draft first.")
+                else:
+                    if 'attachment' in vals and vals['attachment']:
+                        json = self.process_ocr(vals['attachment'], vals['attachment_name'],
+                                                vals['category_id'] or expense.category_id.name)
+                        vals = self.update_vals(vals, json)
         return super(ObaExpense, self).write(vals)
+
+    def unlink(self):
+        for expense in self:
+            if expense.state == 'posted':
+                raise ValidationError(f"Expense {expense.display_name} is already posted."
+                                      "Revert it to Draft first.")
+        return super(ObaExpense, self).unlink()
 
     @api.model
     def create(self, vals_list):
@@ -100,9 +115,9 @@ class ObaExpense(models.Model):
                 })
         return True
 
-    def validate_fields(self, status):
+    def validate_fields(self, vals):
         ret = True
-        if status == 'posted':
+        if 'state' in vals and vals['state'] == 'posted':
             for expense in self:
                 if not expense.amount:
                     raise ValidationError(f"{expense._fields['amount'].string} cannot be empty.")

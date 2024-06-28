@@ -37,6 +37,6 @@ class ObaTransaction(models.Model):
 
     def unlink(self):
         for record in self:
-            record.account_id.balance = record.account_id.balance - record.amount
-            record.offset_account_id.balance = record.offset_account_id.balance + record.amount
+            record.account_id.balance = record.account_id.balance + record.amount
+            record.offset_account_id.balance = record.offset_account_id.balance - record.amount
         return super(ObaTransaction, self).unlink()

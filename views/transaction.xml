@@ -4,7 +4,7 @@
             <field name="name">oba.transaction.tree</field>
             <field name="model">oba.transaction</field>
             <field name="arch" type="xml">
-                <tree default_order="date desc">
+                <tree default_order="date desc" duplicate="False" edit="False" delete="False">
                     <field name="date"/>
                     <field name="amount"/>
                     <field name="account_id"/>
@@ -19,7 +19,7 @@
             <field name="name">oba.transaction.form</field>
             <field name="model">oba.transaction</field>
             <field name="arch" type="xml">
-                <form>
+                <form duplicate="False" edit="False" delete="False">
                     <sheet>
                         <div class="oe_title">
                             <h1 class="d-flex flex-row">
