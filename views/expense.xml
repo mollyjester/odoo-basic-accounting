@@ -35,7 +35,7 @@
                             </h1>
                         </div>
                         <group>
-                            <group string="Main">
+                            <group string="General">
                                 <field name="date" readonly="state!='draft'"/>
                                 <field name="amount" readonly="state!='draft'"/>
                             </group>
@@ -56,7 +56,7 @@
                         <notebook>
                             <page string="Attachment">
                                 <field name="attachment_name" invisible="True"/>
-                                <field name="attachment" filename="attachment_name" readonly="state!='draft'"/>
+                                <field name="attachment" string="Receipt" filename="attachment_name" readonly="state!='draft'"/>
                                 <!--<label string="" for="attachment"/>-->
                                 <field name="attachment" widget="image" readonly="True" options="{'size': [150]}"
                                        nolabel="1"/>
@@ -67,6 +67,46 @@
                             </page>
                         </notebook>
                     </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="oba_expense_quick_form">
+            <field name="name">oba.expense.quick.form</field>
+            <field name="model">oba.expense</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1 class="d-flex flex-row">New expense</h1>
+                        </div>
+                        <group>
+                            <group string="Receipt">
+                                <field name="category_id"/>
+                                <field name="attachment_name" invisible="True"/>
+                                <field name="attachment" string="Receipt" filename="attachment_name"/>
+                            </group>
+                            <group string="General">
+                                <field name="date"/>
+                                <field name="amount"/>
+                            </group>
+                            <group string="Accounts">
+                                <field name="account_id"/>
+                                <field name="offset_account_id"/>
+                            </group>
+                            <group string="Vendor">
+                                <field name="vendor_id"/>
+                            </group>
+                            <group string="Company info">
+                                <field name="currency_id"/>
+                                <field name="company_id"/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Save" special="save"/>
+                        <button string="Discard" special="cancel" icon="fa-trash"/>
+                    </footer>
                 </form>
             </field>
         </record>
@@ -107,6 +147,13 @@
             <field name="view_id" ref="oba_expense_tree"/>
         </record>
 
+        <record model="ir.actions.act_window" id="oba_expense_quick_action_window">
+            <field name="name">New expense</field>
+            <field name="res_model">oba.expense</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="oba_expense_quick_form"/>
+        </record>
+
         <record model="ir.actions.act_window" id="oba_expense_category_action_window">
             <field name="name">Categories</field>
             <field name="res_model">oba.expense.category</field>
@@ -126,5 +173,10 @@
                   parent="oba_expenses_menu_root"
                   action="oba_expense_category_action_window"
                   sequence="20"/>
+        <menuitem name="New expense"
+                  id="oba_expenses_quick_menu"
+                  parent="oba_expenses_menu_root"
+                  action="oba_expense_quick_action_window"
+                  sequence="30"/>
     </data>
 </odoo>

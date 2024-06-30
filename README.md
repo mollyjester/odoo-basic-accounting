@@ -15,11 +15,9 @@ Odoo basic accounting module for household management
 - [x] Expenses
 - [x] OCR Veryfi
 - [ ] 'One button' expense creation
-- [ ] Data migration from __Foreceipt__
+- [x] Data migration from __Foreceipt__
 - [ ] Ledger Journals
 - [ ] 'One button' journal creation
 - [ ] Dashboard
-- [ ] UI
-- [ ] Reports
-- [ ] Banks
-- [ ] Bank statement import
+- [ ] UI tweaks
+- [ ] Reports?
