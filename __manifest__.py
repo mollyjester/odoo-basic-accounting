@@ -29,6 +29,7 @@
         'views/account.xml',
         'views/transaction.xml',
         'views/expense.xml',
+        'views/transfer.xml',
         'views/res_config_settings.xml'
     ],
     'installable': True,

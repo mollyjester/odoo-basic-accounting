@@ -23,6 +23,7 @@ class ObaTransaction(models.Model):
 
     @api.model
     def create(self, vals_list):
+        # TODO: validations
         new_record = super(ObaTransaction, self).create(vals_list)
         new_record.account_id.balance = new_record.account_id.balance - new_record.amount
         new_record.offset_account_id.balance = new_record.offset_account_id.balance + new_record.amount

@@ -1,0 +1,73 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="oba_transfer_tree">
+            <field name="name">oba.transfer.tree</field>
+            <field name="model">oba.transfer</field>
+            <field name="arch" type="xml">
+                <tree default_order="date desc">
+                    <field name="date" readonly="state!='draft'"/>
+                    <field name="account_id" readonly="state!='draft'"/>
+                    <field name="offset_account_id" readonly="state!='draft'"/>
+                    <field name="amount" readonly="state!='draft'"/>
+                    <field name="currency_id"/>
+                    <field name="company_id"/>
+                    <field name="state" widget="badge" decoration-bf="state=='draft'"
+                           decoration-danger="state=='cancel'" decoration-success="state=='posted'"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="oba_transfer_form">
+            <field name="name">oba.transfer.form</field>
+            <field name="model">oba.transfer</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,posted"
+                               options="{'clickable': 1}"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_title">
+                            <h1 class="d-flex flex-row">
+                                <field name="display_name"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="General">
+                                <field name="date" readonly="state!='draft'"/>
+                                <field name="amount" readonly="state!='draft'"/>
+                                <field name="currency_id"/>
+                            </group>
+                            <newline/>
+                            <group string="Accounts">
+                                <field name="account_id" readonly="state!='draft'"/>
+                                <field name="offset_account_id" readonly="state!='draft'"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Transactions">
+                                <field name="transaction_ids" options="{'create': False, 'delete': False}"
+                                       readonly="state!='draft'"/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="oba_transfer_action_window">
+            <field name="name">Transfers</field>
+            <field name="res_model">oba.transfer</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="oba_transfer_tree"/>
+        </record>
+
+        <menuitem name="Transfers" id="oba_transfers_menu_root" parent="odoo-basic-accounting.oba_menu_root"
+                  sequence="30"/>
+        <menuitem name="Transfers"
+                  id="oba_transfers_menu"
+                  parent="oba_transfers_menu_root"
+                  action="oba_transfer_action_window"
+                  sequence="10"/>
+    </data>
+</odoo>

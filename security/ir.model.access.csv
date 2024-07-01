@@ -2,4 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 oba_account,oba_account,model_oba_account,base.group_user,1,1,1,0
 oba_transaction,oba_transaction,model_oba_transaction,base.group_user,1,0,1,0
 oba_expense,oba_expense,model_oba_expense,base.group_user,1,1,1,1
+oba_transfer,oba_transfer,model_oba_transfer,base.group_user,1,1,1,1
 oba_expense_category,oba_expense_category,model_oba_expense_category,base.group_user,1,1,1,1

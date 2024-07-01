@@ -6,9 +6,9 @@
             <field name="arch" type="xml">
                 <tree default_order="date desc" duplicate="False" edit="False" delete="False">
                     <field name="date"/>
-                    <field name="amount"/>
                     <field name="account_id"/>
                     <field name="offset_account_id"/>
+                    <field name="amount"/>
                     <field name="currency_id"/>
                     <field name="company_id"/>
                 </tree>
@@ -27,18 +27,16 @@
                             </h1>
                         </div>
                         <group>
-                            <group string="Main">
+                            <group string="General">
                                 <field name="date"/>
                                 <field name="amount"/>
+                                <field name="currency_id"/>
+                                <field name="company_id"/>
                             </group>
                             <newline/>
                             <group string="Accounts">
                                 <field name="account_id"/>
                                 <field name="offset_account_id"/>
-                            </group>
-                            <group string="Company info">
-                                <field name="currency_id"/>
-                                <field name="company_id"/>
                             </group>
                         </group>
                     </sheet>

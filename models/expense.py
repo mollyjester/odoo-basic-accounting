@@ -1,6 +1,6 @@
 from odoo import models, fields, api
 from . import veryfistream
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import ValidationError
 
 
 class ObaExpense(models.Model):
@@ -18,8 +18,7 @@ class ObaExpense(models.Model):
     currency_id = fields.Many2one(string="Currency", related='company_id.currency_id', readonly=True)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('posted', 'Posted'),
-        ('cancel', 'Cancelled')
+        ('posted', 'Posted')
     ], string='Status', copy=False, default='draft')
     attachment = fields.Binary(string="Attachment")
     attachment_name = fields.Char(string="Attachment name")
@@ -98,7 +97,7 @@ class ObaExpense(models.Model):
         return super(ObaExpense, self).create(vals_list)
 
     def set_status(self, status):
-        if status == 'draft' or status == 'cancel':
+        if status == 'draft':
             transactions = self.env['oba.transaction'].sudo().search(
                 [('source_model', '=', self._name), ('source_id', 'in', self.ids)])
             transactions.unlink()
