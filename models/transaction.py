@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 
 class ObaTransaction(models.Model):
@@ -21,15 +22,30 @@ class ObaTransaction(models.Model):
             expense.display_name = \
                 f"{expense.account_id.name} > {expense.offset_account_id.name}"
 
+    def validate_fields(self, vals):
+        if not vals['amount']:
+            raise ValidationError("Transaction amount cannot be empty.")
+        if not vals['date']:
+            raise ValidationError("Transaction date cannot be empty.")
+        if not vals['account_id']:
+            raise ValidationError("Transaction account cannot be empty.")
+        if not vals['offset_account_id']:
+            raise ValidationError("Transaction offset account cannot be empty.")
+        if not vals['company_id']:
+            raise ValidationError("Transaction company cannot be empty.")
+        return True
+
     @api.model
     def create(self, vals_list):
-        # TODO: validations
+        self.validate_fields(vals_list)
         new_record = super(ObaTransaction, self).create(vals_list)
         new_record.account_id.balance = new_record.account_id.balance - new_record.amount
         new_record.offset_account_id.balance = new_record.offset_account_id.balance + new_record.amount
         return new_record
 
     def write(self, vals):
+        # we are not supposed to be here ever, but just in case
+        self.validate_fields(vals)
         ret = super(ObaTransaction, self).write(vals)
         for record in self:
             record.account_id.balance = record.account_id.balance - record.amount
