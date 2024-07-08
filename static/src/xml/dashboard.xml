@@ -3,9 +3,14 @@
     <t t-name="odoo-basic-accounting.ObaDashboard">
         <Layout display="display" className="'o_dashboard h-100'">
             <t t-set-slot="layout-buttons">
-
+                <button class="btn btn-primary" t-on-click="openQuickExpense">Add Expense</button>
             </t>
-            some content
+            <div class="d-flex flex-wrap">
+                <DashboardItem size="2">
+                        Expenses by month
+                        <BarChart data="statistics['orders_by_size']" label="'Expenses by month'"/>
+                </DashboardItem>
+            </div>
         </Layout>
     </t>
 </templates>

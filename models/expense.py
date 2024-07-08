@@ -62,6 +62,18 @@ class ObaExpense(models.Model):
                 vals['vendor_id'] = partner.id
         return vals
 
+    @api.model
+    def total_amount(self, date_start=None, date_end=None, granularity=None):
+        domain = [('state', '=', 'posted')]
+        if date_start:
+            domain += ('date', '>=', date_start)
+        if date_end:
+            domain += ('date', '<=', date_end)
+        groupby = 'date'
+        if granularity:
+            groupby += ':' + granularity
+        return self.env['oba.expense'].read_group(domain, ['amount', 'date:sum'], groupby)
+
     def write(self, vals):
         if 'state' in vals:
             if self.validate_fields(vals):
