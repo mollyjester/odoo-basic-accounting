@@ -8,7 +8,7 @@
             <div class="d-flex flex-wrap">
                 <DashboardItem size="2">
                         Expenses by month
-                        <BarChart data="statistics['orders_by_size']" label="'Expenses by month'"/>
+                        <BarChart data="statistics['expenses']" label="'Expenses'"/>
                 </DashboardItem>
             </div>
         </Layout>

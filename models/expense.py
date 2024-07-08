@@ -66,13 +66,13 @@ class ObaExpense(models.Model):
     def total_amount(self, date_start=None, date_end=None, granularity=None):
         domain = [('state', '=', 'posted')]
         if date_start:
-            domain += ('date', '>=', date_start)
+            domain.append(('date', '>=', date_start))
         if date_end:
-            domain += ('date', '<=', date_end)
+            domain.append(('date', '<=', date_end))
         groupby = 'date'
         if granularity:
             groupby += ':' + granularity
-        return self.env['oba.expense'].read_group(domain, ['amount', 'date:sum'], groupby)
+        return self.env['oba.expense'].read_group(domain, ['amount:sum', 'date'], groupby)
 
     def write(self, vals):
         if 'state' in vals:
